@@ -154,6 +154,16 @@ function setTaskDone(guildId, taskId) {
   });
 }
 
+// Deletes an item from 'events', 'tasks', or 'reminders'. Returns the removed item, or null.
+function removeItem(guildId, list, id) {
+  let removed = null;
+  updateGuild(guildId, (guild) => {
+    const index = guild[list].findIndex((item) => item.id === id);
+    if (index !== -1) [removed] = guild[list].splice(index, 1);
+  });
+  return removed;
+}
+
 function setChannelId(guildId, channelId) {
   return updateGuild(guildId, (guild) => {
     guild.channelId = channelId;
@@ -181,6 +191,7 @@ module.exports = {
   addReminderManual,
   setTaskPriority,
   setTaskDone,
+  removeItem,
   setChannelId,
   setScanCursor,
   prunePastEvents,

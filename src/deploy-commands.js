@@ -35,6 +35,14 @@ const commands = [
             .setDescription('Date and time (e.g. April 12 3pm, next Friday 9:00 AM)')
             .setRequired(true)
         )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('remove')
+        .setDescription('Delete an event')
+        .addIntegerOption((opt) =>
+          opt.setName('event').setDescription('Pick an event').setRequired(true).setAutocomplete(true)
+        )
     ),
   new SlashCommandBuilder()
     .setName('reminder')
@@ -45,6 +53,14 @@ const commands = [
         .setDescription('Add a reminder manually')
         .addStringOption((opt) =>
           opt.setName('text').setDescription('What to remember').setRequired(true)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('remove')
+        .setDescription('Delete a reminder')
+        .addIntegerOption((opt) =>
+          opt.setName('reminder').setDescription('Pick a reminder').setRequired(true).setAutocomplete(true)
         )
     ),
   new SlashCommandBuilder()
@@ -90,6 +106,14 @@ const commands = [
       sub
         .setName('done')
         .setDescription('Mark a task complete')
+        .addIntegerOption((opt) =>
+          opt.setName('task').setDescription('Pick a task').setRequired(true).setAutocomplete(true)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('remove')
+        .setDescription('Delete a task')
         .addIntegerOption((opt) =>
           opt.setName('task').setDescription('Pick a task').setRequired(true).setAutocomplete(true)
         )

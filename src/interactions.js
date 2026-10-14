@@ -19,9 +19,34 @@ async function handleTaskAutocomplete(interaction) {
   await interaction.respond(choices);
 }
 
+// Suggests events by name for /event remove.
+async function handleEventAutocomplete(interaction) {
+  const typed = interaction.options.getFocused().toLowerCase();
+  const guild = store.getGuild(interaction.guildId);
+  const choices = [...guild.events]
+    .sort((a, b) => new Date(a.at) - new Date(b.at))
+    .filter((e) => e.text.toLowerCase().includes(typed))
+    .slice(0, 25)
+    .map((e) => ({ name: `${new Date(e.at).toLocaleDateString()} — ${e.text}`.slice(0, 100), value: e.id }));
+  await interaction.respond(choices);
+}
+
+// Suggests reminders by text for /reminder remove.
+async function handleReminderAutocomplete(interaction) {
+  const typed = interaction.options.getFocused().toLowerCase();
+  const guild = store.getGuild(interaction.guildId);
+  const choices = guild.reminders
+    .filter((r) => r.text.toLowerCase().includes(typed))
+    .slice(0, 25)
+    .map((r) => ({ name: r.text.slice(0, 100), value: r.id }));
+  await interaction.respond(choices);
+}
+
 async function handleInteraction(interaction) {
   if (interaction.isAutocomplete()) {
     if (interaction.commandName === 'task') await handleTaskAutocomplete(interaction);
+    if (interaction.commandName === 'event') await handleEventAutocomplete(interaction);
+    if (interaction.commandName === 'reminder') await handleReminderAutocomplete(interaction);
     return;
   }
   if (!interaction.isChatInputCommand()) return;
@@ -82,6 +107,16 @@ async function handleInteraction(interaction) {
       await replyConfirmation(interaction, `Added event **${description}**.`);
       return;
     }
+
+    if (sub === 'remove') {
+      const removed = store.removeItem(interaction.guildId, 'events', interaction.options.getInteger('event'));
+      if (!removed) {
+        await interaction.reply({ content: 'That event no longer exists. Pick one from the list.', ephemeral: true });
+        return;
+      }
+      await replyConfirmation(interaction, `Removed event **${removed.text}**.`);
+      return;
+    }
   }
 
   if (commandName === 'reminder') {
@@ -94,6 +129,16 @@ async function handleInteraction(interaction) {
       }
       store.addReminderManual(interaction.guildId, text);
       await replyConfirmation(interaction, `Added reminder **${text}**.`);
+      return;
+    }
+
+    if (sub === 'remove') {
+      const removed = store.removeItem(interaction.guildId, 'reminders', interaction.options.getInteger('reminder'));
+      if (!removed) {
+        await interaction.reply({ content: 'That reminder no longer exists. Pick one from the list.', ephemeral: true });
+        return;
+      }
+      await replyConfirmation(interaction, `Removed reminder **${removed.text}**.`);
       return;
     }
   }
@@ -152,6 +197,16 @@ async function handleInteraction(interaction) {
       }
       store.setTaskDone(interaction.guildId, taskId);
       await interaction.reply({ content: `Marked **${task.text}** as done.`, ephemeral: true });
+      return;
+    }
+
+    if (sub === 'remove') {
+      const removed = store.removeItem(interaction.guildId, 'tasks', interaction.options.getInteger('task'));
+      if (!removed) {
+        await interaction.reply({ content: 'That task no longer exists. Pick one from the list.', ephemeral: true });
+        return;
+      }
+      await replyConfirmation(interaction, `Removed task **${removed.text}**.`);
     }
   }
 }

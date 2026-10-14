@@ -19,10 +19,13 @@ A Discord bot that keeps a shared schedule of **events**, **to-do tasks**, and *
 | `/schedule channel <channel>` | Choose the channel the bot reads for new items |
 | `/schedule refresh` | Scan the watch channel now (same as the 5 AM job) |
 | `/event add <description> <when>` | Add an event, e.g. `when: next Friday 3pm` |
+| `/event remove <event>` | Delete an event |
 | `/task add <description> [priority] [due]` | Add a task with priority 1–5 (default 3) and an optional due date |
 | `/task priority <task> <priority>` | Change a task's priority |
 | `/task done <task>` | Mark a task complete |
+| `/task remove <task>` | Delete a task |
 | `/reminder add <text>` | Add a quick reminder |
+| `/reminder remove <reminder>` | Delete a reminder |
 
 ## Setup
 
