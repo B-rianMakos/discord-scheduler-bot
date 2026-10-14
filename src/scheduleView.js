@@ -82,7 +82,7 @@ function buildScheduleEmbed(guild, channelMention) {
 
   const sections = [
     [
-      '1 · Important dates & events',
+      '1 · 🗓️ Important dates & events',
       groupedSectionLines(
         upcomingEvents,
         formatEventLine,
@@ -91,7 +91,7 @@ function buildScheduleEmbed(guild, channelMention) {
       ),
     ],
     [
-      '2 · To-do tasks',
+      '2 · ✅ To-do tasks',
       groupedSectionLines(
         tasks,
         formatTaskLine,
@@ -100,7 +100,7 @@ function buildScheduleEmbed(guild, channelMention) {
       ),
     ],
     [
-      '3 · Quick reminders',
+      '3 · 📌 Quick reminders',
       sectionLines(reminders, formatReminderLine, '_No reminders. Post “remember to …” style notes._'),
     ],
   ];
@@ -115,7 +115,8 @@ function buildScheduleEmbed(guild, channelMention) {
   const embed = new EmbedBuilder()
     .setTitle('📅 Scheduler')
     .setColor(0x5865f2)
-    .setDescription(description)
+    // Trailing zero-width-space line adds a gap above the footer (plain trailing newlines get trimmed).
+    .setDescription(`${description}\n​`)
     .setFooter({
       text: 'Add: /event add · /task add · /reminder add · Priority: /task priority · Done: /task done',
     });
